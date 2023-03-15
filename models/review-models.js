@@ -2,12 +2,12 @@ const { query } = require("./../db/connection.js");
 const db = require("./../db/connection.js");
 
 exports.selectReviews = (queries) => {
-  const vaildCategories = [
-    "euro game",
-    "social deduction",
-    "dexterity",
-    "children's games",
-  ];
+  // const vaildCategories = [
+  //   "euro game",
+  //   "social deduction",
+  //   "dexterity",
+  //   "children's games",
+  // ];
 
   const vaildSortBy = [
     "title",
@@ -28,9 +28,9 @@ exports.selectReviews = (queries) => {
   `;
 
   if (queries.category !== undefined) {
-    if (!vaildCategories.includes(queries.category)) {
-      return Promise.reject("Bad request.");
-    }
+    // if (!vaildCategories.includes(queries.category)) {
+    //   return Promise.reject("Bad request.");
+    // }
 
     if (queries.category.includes("'")) {
       queries.category = queries.category.replaceAll("'", "''");
@@ -87,15 +87,15 @@ exports.selectReviewById = (reviewId) => {
 };
 
 exports.updateReviewById = (reviewId, votesUpdate) => {
+
   let queryString = `
   UPDATE reviews
   SET votes = votes + $1`;
-
-  let queryParam = [votesUpdate];
+  let queryParam = [+votesUpdate];
 
   if (reviewId !== undefined) {
     queryString += ` WHERE review_id = $2  RETURNING *`;
-    queryParam.push(reviewId);
+    queryParam.push(+reviewId);
   }
 
   return db.query(queryString, queryParam).then((review) => {

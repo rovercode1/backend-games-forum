@@ -220,6 +220,18 @@ describe("api", () => {
     });
 
     describe("PATCH", () => {
+
+      it.only("201 PATCH - ignores other properties responds with the updated review.", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ inc_votes: 1})
+          .expect(201)
+          .then(({ body }) => {
+            const review = body.review;
+            expect(review.votes).toBe(2);
+          });
+      });
+
       it("201 PATCH - ignores other properties responds with the updated review.", () => {
         return request(app)
           .patch("/api/reviews/2")
@@ -230,6 +242,8 @@ describe("api", () => {
             expect(review.votes).toBe(-95);
           });
       });
+
+
 
       it("400 PATCH - responds with msg bad request if inc_votes not included.", () => {
         return request(app)
