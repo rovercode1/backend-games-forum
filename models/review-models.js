@@ -17,6 +17,7 @@ exports.selectReviews = (queries) => {
     "category",
     "created_at",
     "votes",
+    'comment_count'
   ];
 
   const vaildOrder = ["ASC", "DESC"];
