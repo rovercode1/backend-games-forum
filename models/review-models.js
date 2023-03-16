@@ -17,7 +17,7 @@ exports.selectReviews = (queries) => {
     "category",
     "created_at",
     "votes",
-    'comment_count'
+    "comment_count"
   ];
 
   const vaildOrder = ["ASC", "DESC"];
@@ -49,9 +49,13 @@ exports.selectReviews = (queries) => {
     if (!vaildSortBy.includes(queries.sort_by)) {
       return Promise.reject("Bad request.");
     }
-
-    queryString += ` 
-    ORDER BY reviews.${queries.sort_by}`;
+    if(queries.sort_by === 'comment_count'){
+      queryString += ` 
+      ORDER BY ${queries.sort_by}`;
+    }else{
+      queryString += ` 
+      ORDER BY reviews.${queries.sort_by}`;
+    }
   } else {
     queryString += ` 
     ORDER BY reviews.created_at`;
