@@ -12,6 +12,8 @@ const {
   postComment,
   patchReviewById,
 
+  deleteSelectedComment,
+
   handleServerErrors,
   handle404Errors,
   handle400Errors,
@@ -28,8 +30,9 @@ app.get("/api/users", getUsers);
 app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewid);
 app.patch("/api/reviews/:review_id", patchReviewById);
-
 app.post("/api/reviews/:review_id/comments", postComment);
+
+app.delete("/api/comments/:comment_id", deleteSelectedComment);
 
 app.use(handle404Errors);
 app.use(handle400Errors);

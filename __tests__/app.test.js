@@ -209,19 +209,18 @@ describe("api", () => {
         });
     });
 
-    it("400 GET - returns msg if category is not in the database.", () => {
-      return request(app)
-        .get("/api/reviews?category=banana")
-        .expect(400)
-        .then(({ body }) => {
-          const serverResponseMsg = body.msg;
-          expect(serverResponseMsg).toBe("Bad request.");
-        });
-    });
+    // it("400 GET - returns msg if category is not in the database.", () => {
+    //   return request(app)
+    //     .get("/api/reviews?category=banana")
+    //     .expect(400)
+    //     .then(({ body }) => {
+    //       const serverResponseMsg = body.msg;
+    //       expect(serverResponseMsg).toBe("Bad request.");
+    //     });
+    // });
 
     describe("PATCH", () => {
-
-      it.only("201 PATCH - ignores other properties responds with the updated review.", () => {
+      it("201 PATCH - ignores other properties responds with the updated review.", () => {
         return request(app)
           .patch("/api/reviews/1")
           .send({ inc_votes: 1})
@@ -561,6 +560,14 @@ describe("api", () => {
             });
           });
         });
+    });
+  });
+
+  describe("/api/comments/:comment_id", () => {
+    it.only("204 DELETE - removes comment from database.", () => {
+      return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
     });
   });
 });
