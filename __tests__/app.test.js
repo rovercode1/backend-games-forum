@@ -242,8 +242,6 @@ describe("api", () => {
           });
       });
 
-
-
       it("400 PATCH - responds with msg bad request if inc_votes not included.", () => {
         return request(app)
           .patch("/api/reviews/bad-request")
@@ -278,7 +276,7 @@ describe("api", () => {
     });
   });
 
-  describe("/api/reviews/review_id", () => {
+  describe("/api/reviews/:review_id", () => {
     it("200 GET - responds with single review object.", () => {
       return request(app)
         .get("/api/reviews/2")
@@ -367,6 +365,7 @@ describe("api", () => {
           expect(serverResponseMsg).toBe("Bad request.");
         });
     });
+
     it("400 PATCH - responds with msg bad request if passed a non-number.", () => {
       return request(app)
         .patch("/api/reviews/bad-request")
@@ -409,6 +408,7 @@ describe("api", () => {
             });
           });
       });
+      
       it("201 POST - ignores irrelevant properties responds with the posted comment.", () => {
         return request(app)
           .post("/api/reviews/8/comments")
@@ -430,6 +430,7 @@ describe("api", () => {
             });
           });
       });
+      
       it("404 POST - responds with msg when sent valid but non-existent path.", () => {
         return request(app)
           .post("/api/reviews/99999999/comments")
@@ -564,7 +565,7 @@ describe("api", () => {
   });
 
   describe("/api/comments/:comment_id", () => {
-    it.only("204 DELETE - removes comment from database.", () => {
+    it("204 DELETE - removes comment from database.", () => {
       return request(app)
         .delete("/api/comments/1")
         .expect(204)

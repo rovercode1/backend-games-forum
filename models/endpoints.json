@@ -1,0 +1,106 @@
+{
+  "GET /api": {
+    "description": "displays all available endpoints of the api in json format."
+  },
+  "GET /api/categories": {
+    "description": "responds with an array of all categrories.",
+    "queries": [],
+    "exampleResponse": {
+      "categories": [
+        {
+          "slug": "strategy",
+          "description": "Strategy-focused board games that prioritise limited-randomness"
+        }
+      ]
+    }
+  },
+  "GET /api/reviews": {
+    "description": "responds with an array of reviews that match the query.",
+    "queries": ["category", "sort_by", "order"],
+    "exampleResponse": {
+      "reviews": [
+        {
+          "title": "Velit tempor ullamco amet ipsum dolor voluptate.",
+          "owner": "cooljmessy",
+          "review_id": 14,
+          "category": "hidden-roles",
+          "review_img_url": "https://images.pexels.com/photos/8111357/pexels-photo-8111357.jpeg?w=700&h=700",
+          "review_body": "Nostrud anim cupidatat incididunt ...",
+          "created_at": "2021-02-05T11:27:26.563Z",
+          "votes": 3,
+          "designer": "Don Keigh",
+          "comment_count": "5"
+        }
+      ]
+    }
+  },
+  "GET /api/reviews/:review_id": {
+    "description": "responds with a single review that matches the review id.",
+    "queries": [],
+    "exampleResponse": {
+      "review": {
+        "title": "Occaecat consequat officia in quis commodo.",
+        "owner": "happyamy2016",
+        "review_id": 12,
+        "category": "roll-and-write",
+        "review_img_url": "https://images.pexels.com/photos/6333934/pexels-photo-6333934.jpeg?w=700&h=700",
+        "review_body": "Fugiat fugiat enim officia ...",
+        "created_at": "2020-09-13T15:19:28.077Z",
+        "votes": 8,
+        "designer": "Ollie Tabooger",
+        "comment_count": "1"
+      }
+    }
+  },
+  "GET /api/reviews/:review_id/comments": {
+    "description": "responds with an array of comments linked to the review id.",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "review_id": 12,
+          "comment_id": 18,
+          "votes": 7,
+          "created_at": "2021-05-03T02:52:48.077Z",
+          "author": "grumpy19",
+          "body": "Reprehenderit ipsum eiusmod...",
+          "comment_count": "1"
+        }
+      ]
+    }
+  },
+  "POST /api/reviews/:review_id/comments": {
+    "description": "adds a new comments to the post and responds with the new comment.",
+    "queries": [],
+    "exampleResponse": {
+      "comment": [
+        {
+          "review_id": 12,
+          "comment_id": 20,
+          "votes": 3,
+          "created_at": "2021-05-03T02:52:48.077Z",
+          "author": "grumpy19",
+          "body": "ehenderit lopsum usssmod to...",
+          "comment_count": "1"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes comment from the database.",
+    "queries": []
+  },
+  "GET /api/users": {
+    "description": "responds with an array of all the users on the database.",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "tickle122",
+          "name": "Tom Tickle",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+        }
+      ]
+    }
+  }
+}

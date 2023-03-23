@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 
 const {
+  getEndpoints,
   getCategories,
   getReviews,
   getUsers,
@@ -23,6 +24,11 @@ const {
 app.use(cors());
 app.use(express.json());
 
+app.get('/api', (request, response, next)=>{
+  response.sendFile('./endpoints.json')
+  res.sendFile(path.join(__dirname, '../public', 'endpoints.json'));
+  // response.status(200).send({api: })
+})
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 app.get("/api/users", getUsers);
