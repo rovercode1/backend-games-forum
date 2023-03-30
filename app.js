@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require('cors');
+const fs = require('fs');
 const app = express();
 
 const {
@@ -22,6 +23,18 @@ const {
 
 app.use(cors());
 app.use(express.json());
+
+app.get('/api', (req, res) => {
+  fs.readFile('endpoints.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error reading endpoints file');
+    } else {
+      const endpoints = JSON.parse(data);
+      res.json(endpoints);
+    }
+  });
+});
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
