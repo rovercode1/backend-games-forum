@@ -30,8 +30,8 @@ app.get('/api', (req, res) => {
       console.error(err);
       res.status(500).send('Error reading endpoints file');
     } else {
-      const endpoints =  JSON.stringify(data, null, 2);
-      res.send(endpoints);
+      const endpoints =  JSON.parse(data);
+      res.send({endpoints});
     }
   });
 });
