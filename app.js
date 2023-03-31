@@ -31,7 +31,7 @@ app.get('/api', (req, res) => {
       res.status(500).send('Error reading endpoints file');
     } else {
       const endpoints =  JSON.stringify(data, null, 2);
-      res.json(endpoints);
+      res.send(endpoints);
     }
   });
 });
