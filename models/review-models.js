@@ -102,7 +102,7 @@ exports.selectReviewById = (reviewId) => {
 exports.updateReviewById = (reviewId, votesUpdate) => {
 
   // console.log(!isNaN(votesUpdate))
-  console.log(votesUpdate)
+  // console.log(votesUpdate)
 
   let queryString = `
   UPDATE reviews
