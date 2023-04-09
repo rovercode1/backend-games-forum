@@ -101,13 +101,19 @@ exports.selectReviewById = (reviewId) => {
 
 exports.updateReviewById = (reviewId, votesUpdate) => {
 
+  // console.log(!isNaN(votesUpdate))
+  console.log(votesUpdate)
+
   let queryString = `
   UPDATE reviews
-  SET votes = votes + $1`;
-  let queryParam = [+votesUpdate];
+  SET votes = votes`;
+
+
+  votesUpdate.includes('-')? queryString+= ` ${votesUpdate}` : queryString+=` +${votesUpdate}`
+  let queryParam = [];
 
   if (reviewId !== undefined) {
-    queryString += ` WHERE review_id = $2  RETURNING *`;
+    queryString += ` WHERE review_id = $1  RETURNING *`;
     queryParam.push(+reviewId);
   }
 
