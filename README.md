@@ -7,11 +7,27 @@ Hosted version: https://aquamarine-conkies-2e9fe6.netlify.app/
 Node.js v19.3.0.
 Postgres 14.7
 
-## Inital setup
-First thing to do is set up your enviroment variables. 
-This can be done by creating a _.env_ file.
+## Setup in local enviroment
+Clone the repository:
+git clone https://github.com/rovercode1/be-nc-games.git
+
+
+Navigate to the project directory:
+
+cd <project_directory>
+i.e 
+`
+cd nc-games/
+`
+
+Install the dependencies:
+npm install
+
+database setup:
+Create a .env.test and .env.development file
 `.env.test` is used for your tests database.
 `.env.development` is used for your dev database.
+Make sure to add these .env files to your `.gitignore`
 
 e.g: 
 
@@ -22,7 +38,19 @@ PGDATABASE=nc_games
 PGDATABASE=nc_games_tests
 
 ```
-Make sure to add these .env files to your `.gitignore`
+type `npm run setup-dbs` and then `npm run seed`
+This will create the database, then seed the database with some initial data.
+
+Start the server:
+`npm start`
+Will start the server.
+
+Run tests:
+`npm run test`
+
+That's it! 
+
+
 
 ## API Endpoints
 All availabe endpoints are listed here: https://games-forum.onrender.com/api
