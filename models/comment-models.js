@@ -31,7 +31,7 @@ exports.selectComments = (reviewId) => {
   }
   return db.query(queryStr, queryParam).then((comments) => {
     if (comments.rowCount === 0) {
-      return Promise.reject("Content not found.");
+      return Promise.reject("Comment not found.");
     }
     const comment_count = comments.rows[0].comment_count;
     if (+comment_count === 0) {

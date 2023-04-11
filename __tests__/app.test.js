@@ -269,7 +269,7 @@ describe("api", () => {
           .expect(404)
           .then(({ body }) => {
             const serverResponseMsg = body.msg;
-            expect(serverResponseMsg).toBe("Content not found.");
+            expect(serverResponseMsg).toBe("Review not found.");
           });
       });
     });
@@ -315,7 +315,7 @@ describe("api", () => {
         .expect(404)
         .then(({ body }) => {
           const serverResponseMsg = body.msg;
-          expect(serverResponseMsg).toBe("Content not found.");
+          expect(serverResponseMsg).toBe("Review not found.");
         });
     });
 
@@ -382,7 +382,7 @@ describe("api", () => {
         .expect(404)
         .then(({ body }) => {
           const serverResponseMsg = body.msg;
-          expect(serverResponseMsg).toBe("Content not found.");
+          expect(serverResponseMsg).toBe("Review not found.");
         });
     });
   });
@@ -434,7 +434,7 @@ describe("api", () => {
           .expect(404)
           .then(({ body }) => {
             const serverResponseMsg = body.msg;
-            expect(serverResponseMsg).toBe("Content not found.");
+            expect(serverResponseMsg).toBe("Review not found.");
           });
       });
 
@@ -445,7 +445,7 @@ describe("api", () => {
           .expect(404)
           .then(({ body }) => {
             const serverResponseMsg = body.msg;
-            expect(serverResponseMsg).toBe("Content not found.");
+            expect(serverResponseMsg).toBe("User not found.");
           });
       });
 
@@ -525,7 +525,7 @@ describe("api", () => {
           .expect(404)
           .then(({ body }) => {
             const serverResponseMsg = body.msg;
-            expect(serverResponseMsg).toBe("Content not found.");
+            expect(serverResponseMsg).toBe("Comment not found.");
           });
       });
 
@@ -556,6 +556,31 @@ describe("api", () => {
               avatar_url: expect.any(String),
             });
           });
+        });
+    });
+  });
+
+  describe("/api/users/:username", () => {
+    it("200 GET - responds with user object with correct properties.", () => {
+      return request(app)
+        .get("/api/users/mallionaire")
+        .expect(200)
+        .then(({ body }) => {
+          const user = body.user;
+          expect(user).toMatchObject({
+            username: 'mallionaire',
+            name: 'haz',
+            avatar_url:'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg',
+          });
+        });
+    });
+    it("404 GET - responds with msg when sent valid but non-existent username", () => {
+      return request(app)
+        .get("/api/users/notanusername")
+        .expect(404)
+        .then(({ body }) => {
+          const serverResponseMsg = body.msg;
+          expect(serverResponseMsg).toBe("User not found.");
         });
     });
   });

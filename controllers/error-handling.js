@@ -11,8 +11,28 @@ exports.handle400Errors = (err, req, res, next) => {
 };
 
 exports.handleServerErrors = (err, req, res, next) => {
-  if (err === 'Content not found.' ||  err.code === "23503") {
-    res.status(404).send({ msg: "Content not found." });
+  if (err.code === '23503') {
+    const table = err.detail.split(' ')[err.detail.split(' ').length -1]
+    tableType = table.split('"')[1]
+    if(tableType === 'reviews'){
+      res.status(404).send({ msg: "Review not found." });
+    }
+    else if(tableType === 'users'){
+      res.status(404).send({ msg: "User not found." });
+    }
+  }
+  else if(err === 'Comment not found.'){
+    
+    res.status(404).send({ msg: "Comment not found." });
+  }
+  else if(err === 'User not found.'){
+    res.status(404).send({ msg: "User not found." });
+  }
+  else if(err === 'Review not found.'){
+    res.status(404).send({ msg: "Review not found." });
+  }
+  else if(err === 'Comment not found.'){
+    res.status(404).send({ msg: "Comment not found." });
   }
   else {
     next(err);
