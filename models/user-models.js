@@ -16,3 +16,6 @@ exports.selectUserById = (username) => {
     return result.rows[0];
   });
 };
+
+
+
