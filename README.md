@@ -39,6 +39,7 @@ PGDATABASE=nc_games_tests
 
 ```
 type `npm run setup-dbs` and then `npm run seed`
+`npm test setup-dbs` seeds the test database.
 This will create the database, then seed the database with some initial data.
 
 Start the server:
