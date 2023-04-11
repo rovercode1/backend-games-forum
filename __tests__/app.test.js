@@ -387,11 +387,11 @@ describe("api", () => {
     });
   });
 
-  describe("/api/reviews/:review_id/comments", () => {
+  describe("/api/comments/:review_id/", () => {
     describe("POST", () => {
       it("201 POST - responds with the posted comment.", () => {
         return request(app)
-          .post("/api/reviews/6/comments")
+          .post("/api/comments/6")
           .send({ username: "mallionaire", body: "This is a new comment!" })
           .expect(201)
           .then(({ body }) => {
@@ -408,7 +408,7 @@ describe("api", () => {
       });
       it("201 POST - ignores irrelevant properties responds with the posted comment.", () => {
         return request(app)
-          .post("/api/reviews/8/comments")
+          .post("/api/comments/8")
           .send({
             username: "mallionaire",
             body: "Ignore the fruit!",
@@ -429,7 +429,7 @@ describe("api", () => {
       });
       it("404 POST - responds with msg when sent valid but non-existent path.", () => {
         return request(app)
-          .post("/api/reviews/99999999/comments")
+          .post("/api/comments/99999999")
           .send({ username: "mallionaire", body: "This is a new comment!" })
           .expect(404)
           .then(({ body }) => {
@@ -440,7 +440,7 @@ describe("api", () => {
 
       it("404 POST - responds with msg when sent invalid username.", () => {
         return request(app)
-          .post("/api/reviews/10/comments")
+          .post("/api/comments/10")
           .send({ username: "not_a_username", body: "This is a new comment!" })
           .expect(404)
           .then(({ body }) => {
@@ -451,7 +451,7 @@ describe("api", () => {
 
       it("400 POST - invalid review id responds with bad request msg.", () => {
         return request(app)
-          .post("/api/reviews/bad-request/comments")
+          .post("/api/comments/bad-request")
           .send({ username: "mallionaire", body: "This is a new comment!" })
           .expect(400)
           .then(({ body }) => {
@@ -475,7 +475,7 @@ describe("api", () => {
     describe("GET", () => {
       it("200 GET - responds with an array of comments for the given review_id.", () => {
         return request(app)
-          .get("/api/reviews/3/comments")
+          .get("/api/comments/3")
           .expect(200)
           .then(({ body }) => {
             const comments = body.comments;
@@ -496,7 +496,7 @@ describe("api", () => {
 
       it("200 GET - comments should be sorted by date in descending order.", () => {
         return request(app)
-          .get("/api/reviews/3/comments")
+          .get("/api/comments/3")
           .expect(200)
           .then(({ body }) => {
             const comments = body.comments;
@@ -510,7 +510,7 @@ describe("api", () => {
 
       it("200 GET - review with no comments should return an empty array.", () => {
         return request(app)
-          .get("/api/reviews/8/comments")
+          .get("/api/comments/8")
           .expect(200)
           .then(({ body }) => {
             const comments = body.comments;
@@ -521,7 +521,7 @@ describe("api", () => {
 
       it("404 GET - responds with msg when sent valid but non-existent path.", () => {
         return request(app)
-          .get("/api/reviews/74872/comments")
+          .get("/api/comments/74872")
           .expect(404)
           .then(({ body }) => {
             const serverResponseMsg = body.msg;
@@ -531,7 +531,7 @@ describe("api", () => {
 
       it("400 GET - responds with msg bad request.", () => {
         return request(app)
-          .get("/api/reviews/bad-request/comments")
+          .get("/api/comments/bad-request")
           .expect(400)
           .then(({ body }) => {
             const serverResponseMsg = body.msg;
