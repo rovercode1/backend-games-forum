@@ -22,7 +22,6 @@ exports.handleServerErrors = (err, req, res, next) => {
     }
   }
   else if(err === 'Comment not found.'){
-    
     res.status(404).send({ msg: "Comment not found." });
   }
   else if(err === 'User not found.'){
@@ -30,9 +29,6 @@ exports.handleServerErrors = (err, req, res, next) => {
   }
   else if(err === 'Review not found.'){
     res.status(404).send({ msg: "Review not found." });
-  }
-  else if(err === 'Comment not found.'){
-    res.status(404).send({ msg: "Comment not found." });
   }
   else {
     next(err);

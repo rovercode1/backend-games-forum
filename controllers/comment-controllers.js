@@ -1,4 +1,4 @@
-const { insertComment, selectComments, deleteComment } = require("../models/comment-models");
+const { insertComment, selectComments, deleteComment, updateComment } = require("../models/comment-models");
 
 exports.postComment = (request, response, next) => {
   const newComment = request.body;
@@ -36,3 +36,17 @@ exports.deleteSelectedComment = (request, response, next) => {
       next(err);
     });
 };
+
+exports.updateSelectedComment = (request, response, next) => {
+  const comment_id = request.params.comment_id;
+  const patchRequest = request.body 
+
+  updateComment(comment_id, patchRequest)
+    .then((updatedComment) => {
+      response.status(201).send({comment: updatedComment})
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+

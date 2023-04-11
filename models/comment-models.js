@@ -51,3 +51,24 @@ exports.deleteComment = (comment_id)=>{
     return true
   });
 }
+
+exports.updateComment = (username, patchRequest) => {
+  if(!patchRequest.hasOwnProperty('inc_votes')){
+    return Promise.reject('Bad request.')
+  }
+  const votesUpdate = patchRequest.inc_votes
+
+  let queryString = `
+  UPDATE comments
+  SET votes = votes`;
+
+  votesUpdate.includes('-')? queryString+= ` ${votesUpdate}` : queryString+=` +${votesUpdate}`
+  queryString += ` WHERE comment_id = ${username} RETURNING *`;
+  return db.query(queryString)
+  .then((result) => {
+    if (result.rowCount === 0) {
+      return Promise.reject("Comment not found.");
+    }
+    return result.rows[0];
+  });
+};
