@@ -22,9 +22,9 @@ exports.getReviewById = (request, response, next)=>{
 
 exports.patchReviewById = (request, response, next)=>{
   const reviewId = request.params.review_id;
-  const votesUpdate = request.body.inc_votes
+  const patchRequest = request.body
 
-  updateReviewById(reviewId, votesUpdate)
+  updateReviewById(reviewId, patchRequest)
   .then((review)=>{
     response.status(201).send({review: review})
   }).catch((err)=>{

@@ -99,10 +99,13 @@ exports.selectReviewById = (reviewId) => {
   });
 };
 
-exports.updateReviewById = (reviewId, votesUpdate) => {
+exports.updateReviewById = (reviewId, patchRequest) => {
 
-  // console.log(!isNaN(votesUpdate))
-  // console.log(votesUpdate)
+  if(!patchRequest.hasOwnProperty('inc_votes')){
+    return Promise.reject('Bad request.')
+  }
+
+  const votesUpdate = patchRequest.inc_votes 
 
   let queryString = `
   UPDATE reviews
