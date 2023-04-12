@@ -22,6 +22,14 @@ describe("api", () => {
     });
   });
 
+  describe("/api/", () => {
+    it("200 GET - responds with all available endpoints.", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+    });
+  });
+
   describe("/api/categories", () => {
     it("200 GET - responds with all catgories with correct properties.", () => {
       return request(app)

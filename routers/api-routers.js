@@ -3,6 +3,7 @@ const categoryRouter = require('./category-router')
 const userRouter = require('./users-router')
 const reviewRouter = require('./review-router')
 const commentRouter = require('./comment-router')
+const fs = require('fs');
 
 apiRouter.get('/', (req, res) => {
   fs.readFile('endpoints.json', 'utf8', (err, data) => {

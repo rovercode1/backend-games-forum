@@ -36,13 +36,13 @@
           "username": "mallionaire",
           "name": "haz",
           "avatar_url":
-            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
         }
       ]
     }
   },
   "GET /api/reviews": {
-    "description": "serves up with an array of reviews that match the query.",
+    "description": "serves up with an array of reviews that matches the query.",
     "queries": ["category", "sort_by", "order","p","limit"],
     "exampleResponse": {
       "reviews": [
@@ -62,7 +62,7 @@
     }
   },
   "POST /api/reviews": {
-    "description": "adds a new review responds with the new review.",
+    "description": "adds a new review and responds with the new review.",
     "queries": [],
     "exampleResponse": {
       "review": {
@@ -132,7 +132,7 @@
     }
   },
   "POST /api/comments/reviews/:review_id": {
-    "description": "adds a new comments to the post and responds with the new comment.",
+    "description": "adds a new comment to the post and responds with the new comment.",
     "queries": [],
     "exampleResponse": {
       "comment": [
