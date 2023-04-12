@@ -344,70 +344,7 @@ describe("api", () => {
           });
       });
     });
-    describe("PATCH", () => {
-      it("201 - responds with the updated review.", () => {
-        return request(app)
-          .patch("/api/reviews/1")
-          .send({ inc_votes: "+1" })
-          .expect(201)
-          .then(({ body }) => {
-            const review = body.review;
-            expect(review.votes).toBe(2);
-          });
-      });
 
-      it("201 - ignores other properties responds with the updated review.", () => {
-        return request(app)
-          .patch("/api/reviews/2")
-          .send({ inc_votes: "-100", name: "Anouk" })
-          .expect(201)
-          .then(({ body }) => {
-            const review = body.review;
-            expect(review.votes).toBe(-95);
-          });
-      });
-      it("400 - responds with msg bad request if passed a non-number.", () => {
-        return request(app)
-          .patch("/api/reviews/2")
-          .send({ inc_votes: "notanumber" })
-          .expect(400)
-          .then(({ body }) => {
-            const serverResponseMsg = body.msg;
-            expect(serverResponseMsg).toBe("Bad request.");
-          });
-      });
-      it("400 - responds with msg bad request if inc_votes not included.", () => {
-        return request(app)
-          .patch("/api/reviews/2")
-          .send({ not_votes: "2" })
-          .expect(400)
-          .then(({ body }) => {
-            const serverResponseMsg = body.msg;
-            expect(serverResponseMsg).toBe("Bad request.");
-          });
-      });
-      it("400 - responds with msg bad request if sent to invaild review id.", () => {
-        return request(app)
-          .patch("/api/reviews/badrequest")
-          .send({ inc_votes: "2" })
-          .expect(400)
-          .then(({ body }) => {
-            const serverResponseMsg = body.msg;
-            expect(serverResponseMsg).toBe("Bad request.");
-          });
-      });
-
-      it("404 - responds with msg when sent valid but non-existent path.", () => {
-        return request(app)
-          .patch("/api/reviews/99999999")
-          .send({ inc_votes: "5" })
-          .expect(404)
-          .then(({ body }) => {
-            const serverResponseMsg = body.msg;
-            expect(serverResponseMsg).toBe("Review not found.");
-          });
-      });
-    });
   });
 
   describe('/api/reviews?pagination', () => {
@@ -740,7 +677,8 @@ describe("api", () => {
   });
 
   describe("/api/comments/:comment_id", () => {
-    it("201 PATCH - responds with the updated comment.", () => {
+    describe('PATCH', () => {
+    it("201 - responds with the updated comment.", () => {
       return request(app)
         .patch("/api/comments/2")
         .send({ inc_votes: "+1" })
@@ -750,7 +688,7 @@ describe("api", () => {
           expect(comment.votes).toBe(14);
         });
     });
-    it("201 PATCH - ignores other properties responds with the updated review.", () => {
+    it("201 - ignores other properties responds with the updated review.", () => {
       return request(app)
         .patch("/api/comments/2")
         .send({ inc_votes: "+1", soup: "tomato" })
@@ -760,7 +698,7 @@ describe("api", () => {
           expect(comment.votes).toBe(14);
         });
     });
-    it("400 PATCH - responds with msg if inc_votes not included.", () => {
+    it("400 - responds with msg if inc_votes not included.", () => {
       return request(app)
         .patch("/api/comments/2")
         .send({ just: "soup" })
@@ -770,7 +708,7 @@ describe("api", () => {
           expect(serverResponseMsg).toBe("Bad request.");
         });
     });
-    it("400 PATCH - responds with msg if sent to invalid review id.", () => {
+    it("400 - responds with msg if sent to invalid review id.", () => {
       return request(app)
         .patch("/api/comments/bad-request")
         .send({ inc_votes: "+1" })
@@ -780,7 +718,7 @@ describe("api", () => {
           expect(serverResponseMsg).toBe("Bad request.");
         });
     });
-    it("400 PATCH - responds with msg if passed a non-number.", () => {
+    it("400 - responds with msg if passed a non-number.", () => {
       return request(app)
         .patch("/api/comments/2")
         .send({ inc_votes: "notanumber" })
@@ -790,7 +728,7 @@ describe("api", () => {
           expect(serverResponseMsg).toBe("Bad request.");
         });
     });
-    it("404 PATCH - responds with msg when sent valid but non-existent path.", () => {
+    it("404 - responds with msg when sent valid but non-existent path.", () => {
       return request(app)
         .patch("/api/comments/12345")
         .send({ inc_votes: "+1" })
@@ -799,12 +737,12 @@ describe("api", () => {
           const serverResponseMsg = body.msg;
           expect(serverResponseMsg).toBe("Comment not found.");
         });
-    });
-
-    //Invalid comment id
-    //invalid
-    it("204 DELETE - removes comment from database.", () => {
-      return request(app).delete("/api/comments/1").expect(204);
+    }); 
+  });
+    describe('DELETE', () => {
+      it("204 - removes comment from database.", () => {
+        return request(app).delete("/api/comments/1").expect(204);
+      });
     });
   });
 });

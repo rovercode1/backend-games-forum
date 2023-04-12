@@ -3,7 +3,7 @@
     "description": "serves up all available endpoints of the api in json format."
   },
   "GET /api/categories": {
-    "description": "serves up with an array of all categrories.",
+    "description": "serves up an array of all categrories in the database.",
     "queries": [],
     "exampleResponse": {
       "categories": [
@@ -14,9 +14,36 @@
       ]
     }
   },
+  "GET /api/users": {
+    "description": "serves up an array of all the users in the database.",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "tickle122",
+          "name": "Tom Tickle",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+        }
+      ]
+    }
+  },
+  "GET /api/users/:username": {
+    "description": "serves up a single user that matches the user id.",
+    "queries": [],
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "mallionaire",
+          "name": "haz",
+          "avatar_url":
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        }
+      ]
+    }
+  },
   "GET /api/reviews": {
     "description": "serves up with an array of reviews that match the query.",
-    "queries": ["category", "sort_by", "order"],
+    "queries": ["category", "sort_by", "order","p","limit"],
     "exampleResponse": {
       "reviews": [
         {
@@ -32,6 +59,23 @@
           "comment_count": "5"
         }
       ]
+    }
+  },
+  "POST /api/reviews": {
+    "description": "adds a new review responds with the new review.",
+    "queries": [],
+    "exampleResponse": {
+      "review": {
+        "title": "This is a new review",
+        "owner": "happyamy2016",
+        "review_id": 13,
+        "category": "roll-and-write",
+        "review_img_url": "https://image.cnbcfm.com/api/v1/image/104151701-GettyImages-143949731.jpg",
+        "review_body": "Review review review review",
+        "created_at": "2020-09-13T15:19:28.077Z",
+        "votes": 0,
+        "designer": "Ollie Tabooger"
+      }
     }
   },
   "GET /api/reviews/:review_id": {
@@ -52,8 +96,26 @@
       }
     }
   },
-  "GET /api/reviews/:review_id/comments": {
-    "description": "serves up an array of comments linked to the review id.",
+  "PATCH /api/reviews/:review_id": {
+    "description": "responds with the updated review that matches the review id.",
+    "queries": [],
+    "exampleResponse": {
+      "review": {
+        "title": "This review is an update.",
+        "owner": "happyamy2016",
+        "review_id": 12,
+        "category": "roll-and-write",
+        "review_img_url": "https://images.pexels.com/photos/6333934/pexels-photo-6333934.jpeg?w=700&h=700",
+        "review_body": "Fugiat fugiat enim officia ...",
+        "created_at": "2020-09-13T15:19:28.077Z",
+        "votes": 8,
+        "designer": "Ollie Tabooger",
+        "comment_count": "1"
+      }
+    }
+  },
+  "GET /api/comments/reviews/:review_id": {
+    "description": "serves up an array of comments that matches the review id.",
     "queries": [],
     "exampleResponse": {
       "comments": [
@@ -69,7 +131,7 @@
       ]
     }
   },
-  "POST /api/reviews/:review_id/comments": {
+  "POST /api/comments/reviews/:review_id": {
     "description": "adds a new comments to the post and responds with the new comment.",
     "queries": [],
     "exampleResponse": {
@@ -86,21 +148,25 @@
       ]
     }
   },
-  "DELETE /api/comments/:comment_id": {
-    "description": "deletes comment from the database.",
-    "queries": []
-  },
-  "GET /api/users": {
-    "description": "responds with an array of all the users on the database.",
+  "PATCH /api/comments/:comment_id": {
+    "description": "serves up the updated comment.",
     "queries": [],
     "exampleResponse": {
-      "users": [
+      "comment": [
         {
-          "username": "tickle122",
-          "name": "Tom Tickle",
-          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+          "review_id": 12,
+          "comment_id": 20,
+          "votes": 4,
+          "created_at": "2021-05-03T02:52:48.077Z",
+          "author": "grumpy19",
+          "body": "ehenderit lopsum usssmod to...",
+          "comment_count": "1"
         }
       ]
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes comment from the database.",
+    "queries": []
   }
 }
