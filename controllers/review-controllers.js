@@ -2,9 +2,8 @@ const {selectReviews, selectReviewById, updateReviewById, insertReview} = requir
 
 
 exports.getReviews = (request, response, next)=>{
-
   selectReviews(request.query).then((reviews)=>{
-    response.status(200).send({reviews: reviews})
+    response.status(200).send({total_count: reviews.length, reviews: reviews})
   }).catch((err)=>{
     next(err)
   })
