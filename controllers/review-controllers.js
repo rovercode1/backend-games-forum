@@ -1,10 +1,19 @@
-const {selectReviews, selectReviewById, updateReviewById} = require('../models/review-models')
+const {selectReviews, selectReviewById, updateReviewById, insertReview} = require('../models/review-models')
 
 
 exports.getReviews = (request, response, next)=>{
 
   selectReviews(request.query).then((reviews)=>{
     response.status(200).send({reviews: reviews})
+  }).catch((err)=>{
+    next(err)
+  })
+}
+
+exports.postReview = (request, response, next)=>{
+  const requestedPost = request.body
+  insertReview(requestedPost).then((review)=>{
+    response.status(201).send({review: review})
   }).catch((err)=>{
     next(err)
   })

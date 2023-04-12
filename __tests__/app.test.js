@@ -88,54 +88,134 @@ describe("api", () => {
   });
 
   describe("/api/reviews", () => {
-    it("200 GET - responds array of review objects, including the correct properties.", () => {
-      return request(app)
-        .get("/api/reviews")
-        .expect(200)
-        .then(({ body }) => {
-          const reviews = body.reviews;
-          expect(reviews.length).toBe(13);
-          reviews.forEach((review) => {
+    describe("GET", () => {
+      it("200 - responds array of review objects, including the correct properties.", () => {
+        return request(app)
+          .get("/api/reviews")
+          .expect(200)
+          .then(({ body }) => {
+            const reviews = body.reviews;
+            expect(reviews.length).toBe(13);
+            reviews.forEach((review) => {
+              expect(review).toMatchObject({
+                owner: expect.any(String),
+                title: expect.any(String),
+                review_id: expect.any(Number),
+                category: expect.any(String),
+                review_img_url: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                designer: expect.any(String),
+                comment_count: expect.any(String),
+              });
+            });
+
+            const foundReview = reviews.find((review) => {
+              if (review.review_id === 2) {
+                return review;
+              }
+            });
+
+            expect(foundReview.comment_count).toBe("3");
+          });
+      });
+      it("200 - responds with reviews sorted by date in descending order.", () => {
+        return request(app)
+          .get("/api/reviews")
+          .expect(200)
+          .then(({ body }) => {
+            const reviews = body.reviews;
+
+            const reviewDates = reviews.map((review) => {
+              return review.created_at;
+            });
+            expect(reviewDates).toBeSorted({ descending: true });
+          });
+      });
+    });
+    describe("POST", () => {
+      it("201 - responds with the posted review.", () => {
+        return request(app)
+          .post("/api/reviews")
+          .send({
+            owner: "mallionaire",
+            title: "This is a new review!",
+            review_body: "Blah blah blah blahhhh",
+            designer: "Anouk",
+            category: "dexterity",
+            review_img_url: "https://image.cnbcfm.com/api/v1/image/104151701-GettyImages-143949731.jpg",
+          })
+          .expect(201)
+          .then(({ body }) => {
+            const review = body.review;
             expect(review).toMatchObject({
-              owner: expect.any(String),
-              title: expect.any(String),
               review_id: expect.any(Number),
-              category: expect.any(String),
-              review_img_url: expect.any(String),
+              votes: 0,
               created_at: expect.any(String),
-              votes: expect.any(Number),
-              designer: expect.any(String),
-              comment_count: expect.any(String),
+              review_body: "Blah blah blah blahhhh",
+              designer: "Anouk",
+              category: "dexterity",
+              review_img_url: "https://image.cnbcfm.com/api/v1/image/104151701-GettyImages-143949731.jpg",
             });
           });
-
-          const foundReview = reviews.find((review) => {
-            if (review.review_id === 2) {
-              return review;
-            }
-          });
-
-          expect(foundReview.comment_count).toBe("3");
-        });
-    });
-    it("200 GET - the reviews should be sorted by date in descending order.", () => {
-      return request(app)
-        .get("/api/reviews")
-        .expect(200)
+      });
+      it("201 - responds with default review image if not provided.", () => {
+        return request(app)
+        .post("/api/reviews")
+        .send({
+          owner: "mallionaire",
+          title: "This is a new review!",
+          review_body: "Blah blah blah blahhhh",
+          designer: "Anouk",
+          category: "dexterity",
+          review_img_url: "",
+        })
+        .expect(201)
         .then(({ body }) => {
-          const reviews = body.reviews;
-
-          const reviewDates = reviews.map((review) => {
-            return review.created_at;
+          const review = body.review;
+          expect(review).toMatchObject({
+            review_id: expect.any(Number),
+            votes: 0,
+            created_at: expect.any(String),
+            review_body: "Blah blah blah blahhhh",
+            designer: "Anouk",
+            category: "dexterity",
+            review_img_url: "https://get.pxhere.com/photo/game-recreation-yellow-board-game-gamble-sports-double-six-games-luck-lucky-dice-dice-game-indoor-games-and-sports-tabletop-game-1259426.jpg",
           });
-          expect(reviewDates).toBeSorted({ descending: true });
         });
+      });
+      it("201 - ignores irrelevant properties responds with the posted review.", () => {
+        return request(app)
+        .post("/api/reviews")
+        .send({
+          owner: "mallionaire",
+          title: "This is a new review!",
+          review_body: "Blah blah blah blahhhh",
+          designer: "Anouk",
+          category: "dexterity",
+          review_img_url: "",
+          something:'irrelevant'
+        })
+        .expect(201)
+        .then(({ body }) => {
+          const review = body.review;
+          expect(review).toMatchObject({
+            review_id: expect.any(Number),
+            votes: 0,
+            created_at: expect.any(String),
+            review_body: "Blah blah blah blahhhh",
+            designer: "Anouk",
+            category: "dexterity",
+            review_img_url: "https://get.pxhere.com/photo/game-recreation-yellow-board-game-gamble-sports-double-six-games-luck-lucky-dice-dice-game-indoor-games-and-sports-tabletop-game-1259426.jpg",
+          });
+        });
+      });
     });
   });
 
   describe("/api/reviews?query", () => {
     describe("GET", () => {
-      it("200 GET - responds with an array of review objects where category = query.", () => {
+      it("200 - responds with an array of review objects where category = query.", () => {
         return request(app)
           .get("/api/reviews?category=euro+game")
           .expect(200)
@@ -157,7 +237,7 @@ describe("api", () => {
           });
       });
 
-      it("200 GET - responds with an array of review objects where sort_by = query.", () => {
+      it("200 - responds with an array of review objects where sort_by = query.", () => {
         return request(app)
           .get("/api/reviews?sort_by=owner")
           .expect(200)
@@ -172,7 +252,7 @@ describe("api", () => {
           });
       });
 
-      it("200 GET - responds with an array of review objects where order = query.", () => {
+      it("200 - responds with an array of review objects where order = query.", () => {
         return request(app)
           .get("/api/reviews?order=asc")
           .expect(200)
@@ -187,7 +267,7 @@ describe("api", () => {
           });
       });
 
-      it("200 GET - responds with queried array of review objects.", () => {
+      it("200 - responds with queried array of review objects.", () => {
         return request(app)
           .get("/api/reviews?category=social+deduction&sort_by=votes&order=asc")
           .expect(200)
@@ -214,7 +294,7 @@ describe("api", () => {
             expect(reviews[10].votes).toBe(100);
           });
       });
-      it("200 GET - endpoint should default with DESC if there isn't order query.", () => {
+      it("200 - endpoint should default with DESC if there isn't order query.", () => {
         return request(app)
           .get("/api/reviews?category=social+deduction&sort_by=title")
           .expect(200)
@@ -226,7 +306,7 @@ describe("api", () => {
             expect(reviewTitles).toBeSorted({ descending: true });
           });
       });
-      it("200 GET - returns empty array if category that exists but does not have any reviews associated with it.", () => {
+      it("200 - returns empty array if category that exists but does not have any reviews associated with it.", () => {
         return request(app)
           .get("/api/reviews?category=children%27s+games")
           .expect(200)
@@ -235,7 +315,7 @@ describe("api", () => {
             expect(reviews).toEqual([]);
           });
       });
-      it("400 GET - returns msg if order !== 'asc' / 'desc'.", () => {
+      it("400 - returns msg if order !== 'asc' / 'desc'.", () => {
         return request(app)
           .get("/api/reviews?order=upside+down")
           .expect(400)
@@ -245,18 +325,18 @@ describe("api", () => {
           });
       });
 
-      it("400 GET - returns msg if sort by column that doesn't exist.", () => {
+      it("400 - returns msg if sort by column that doesn't exist.", () => {
         return request(app)
           .get("/api/reviews?sort_by=does+not+exist")
           .expect(400)
-          .then(({ body }) => {
+          .then(({body }) => {
             const serverResponseMsg = body.msg;
             expect(serverResponseMsg).toBe("Bad request.");
           });
       });
     });
     describe("PATCH", () => {
-      it("201 PATCH - responds with the updated review.", () => {
+      it("201 - responds with the updated review.", () => {
         return request(app)
           .patch("/api/reviews/1")
           .send({ inc_votes: "+1" })
@@ -267,7 +347,7 @@ describe("api", () => {
           });
       });
 
-      it("201 PATCH - ignores other properties responds with the updated review.", () => {
+      it("201 - ignores other properties responds with the updated review.", () => {
         return request(app)
           .patch("/api/reviews/2")
           .send({ inc_votes: "-100", name: "Anouk" })
@@ -277,7 +357,7 @@ describe("api", () => {
             expect(review.votes).toBe(-95);
           });
       });
-      it("400 PATCH - responds with msg bad request if passed a non-number.", () => {
+      it("400 - responds with msg bad request if passed a non-number.", () => {
         return request(app)
           .patch("/api/reviews/2")
           .send({ inc_votes: "notanumber" })
@@ -287,7 +367,7 @@ describe("api", () => {
             expect(serverResponseMsg).toBe("Bad request.");
           });
       });
-      it("400 PATCH - responds with msg bad request if inc_votes not included.", () => {
+      it("400 - responds with msg bad request if inc_votes not included.", () => {
         return request(app)
           .patch("/api/reviews/2")
           .send({ not_votes: "2" })
@@ -297,7 +377,7 @@ describe("api", () => {
             expect(serverResponseMsg).toBe("Bad request.");
           });
       });
-      it("400 PATCH - responds with msg bad request if sent to invaild review id.", () => {
+      it("400 - responds with msg bad request if sent to invaild review id.", () => {
         return request(app)
           .patch("/api/reviews/badrequest")
           .send({ inc_votes: "2" })
@@ -308,7 +388,7 @@ describe("api", () => {
           });
       });
 
-      it("404 PATCH - responds with msg when sent valid but non-existent path.", () => {
+      it("404 - responds with msg when sent valid but non-existent path.", () => {
         return request(app)
           .patch("/api/reviews/99999999")
           .send({ inc_votes: "5" })
@@ -323,7 +403,7 @@ describe("api", () => {
 
   describe("/api/reviews/review_id", () => {
     describe("GET", () => {
-      it("200 GET - responds with single review object.", () => {
+      it("200 - responds with single review object.", () => {
         return request(app)
           .get("/api/reviews/2")
           .expect(200)
@@ -345,7 +425,7 @@ describe("api", () => {
           });
       });
 
-      it("400 GET - invalid review id responds with bad request msg.", () => {
+      it("400 - invalid review id responds with bad request msg.", () => {
         return request(app)
           .get("/api/reviews/bad-request")
           .expect(400)
@@ -355,7 +435,7 @@ describe("api", () => {
           });
       });
 
-      it("404 GET - responds with msg when sent valid but non-existent path.", () => {
+      it("404 - responds with msg when sent valid but non-existent path.", () => {
         return request(app)
           .get("/api/reviews/99999999")
           .expect(404)
@@ -366,7 +446,7 @@ describe("api", () => {
       });
     });
     describe("PATCH", () => {
-      it("201 PATCH - responds with the updated review.", () => {
+      it("201 - responds with the updated review.", () => {
         return request(app)
           .patch("/api/reviews/2")
           .send({ inc_votes: "100" })
@@ -390,7 +470,7 @@ describe("api", () => {
           });
       });
 
-      it("201 PATCH - ignores other properties responds with the updated review.", () => {
+      it("201 - ignores other properties responds with the updated review.", () => {
         return request(app)
           .patch("/api/reviews/2")
           .send({ inc_votes: "-100", name: "Anouk" })
@@ -401,7 +481,7 @@ describe("api", () => {
           });
       });
 
-      it("400 PATCH - responds with msg if inc_votes not included.", () => {
+      it("400 - responds with msg if inc_votes not included.", () => {
         return request(app)
           .patch("/api/reviews/bad-request")
           .send({ not_votes: "2" })
@@ -411,7 +491,7 @@ describe("api", () => {
             expect(serverResponseMsg).toBe("Bad request.");
           });
       });
-      it("400 PATCH - responds with msg if sent to invalid review id.", () => {
+      it("400 - responds with msg if sent to invalid review id.", () => {
         return request(app)
           .patch("/api/reviews/bad-request")
           .send({ inc_votes: "2" })
@@ -422,7 +502,7 @@ describe("api", () => {
           });
       });
 
-      it("400 PATCH - responds with msg if passed a non-number.", () => {
+      it("400 - responds with msg if passed a non-number.", () => {
         return request(app)
           .patch("/api/reviews/2")
           .send({ inc_votes: "notanumber" })
@@ -433,7 +513,7 @@ describe("api", () => {
           });
       });
 
-      it("404 PATCH - responds with msg when sent valid but non-existent path.", () => {
+      it("404 - responds with msg when sent valid but non-existent path.", () => {
         return request(app)
           .patch("/api/reviews/99999999")
           .send({ inc_votes: "5" })
@@ -448,7 +528,7 @@ describe("api", () => {
 
   describe("/api/comments/review/:review_id/", () => {
     describe("POST", () => {
-      it("201 POST - responds with the posted comment.", () => {
+      it("201 - responds with the posted comment.", () => {
         return request(app)
           .post("/api/comments/review/6")
           .send({ username: "mallionaire", body: "This is a new comment!" })
@@ -465,7 +545,7 @@ describe("api", () => {
             });
           });
       });
-      it("201 POST - ignores irrelevant properties responds with the posted comment.", () => {
+      it("201 - ignores irrelevant properties responds with the posted comment.", () => {
         return request(app)
           .post("/api/comments/review/8")
           .send({
@@ -486,7 +566,7 @@ describe("api", () => {
             });
           });
       });
-      it("404 POST - responds with msg when sent valid but non-existent path.", () => {
+      it("404 - responds with msg when sent valid but non-existent path.", () => {
         return request(app)
           .post("/api/comments/review/99999999")
           .send({ username: "mallionaire", body: "This is a new comment!" })
@@ -497,7 +577,7 @@ describe("api", () => {
           });
       });
 
-      it("404 POST - responds with msg when sent invalid username.", () => {
+      it("404 - responds with msg when sent invalid username.", () => {
         return request(app)
           .post("/api/comments/review/10")
           .send({ username: "not_a_username", body: "This is a new comment!" })
@@ -508,7 +588,7 @@ describe("api", () => {
           });
       });
 
-      it("400 POST - invalid review id responds with bad request msg.", () => {
+      it("400 - invalid review id responds with bad request msg.", () => {
         return request(app)
           .post("/api/comments/review/bad-request")
           .send({ username: "mallionaire", body: "This is a new comment!" })
@@ -519,7 +599,7 @@ describe("api", () => {
           });
       });
 
-      it("400 POST - missing fileds responds with bad request msg.", () => {
+      it("400 - missing fileds responds with bad request msg.", () => {
         return request(app)
           .get("/api/reviews/bad-request")
           .send({ not: "the_correct_field" })
@@ -532,7 +612,7 @@ describe("api", () => {
     });
 
     describe("GET", () => {
-      it("200 GET - responds with an array of comments for the given review_id.", () => {
+      it("200 - responds with an array of comments for the given review_id.", () => {
         return request(app)
           .get("/api/comments/review/3")
           .expect(200)
@@ -553,7 +633,7 @@ describe("api", () => {
           });
       });
 
-      it("200 GET - comments should be sorted by date in descending order.", () => {
+      it("200 - comments should be sorted by date in descending order.", () => {
         return request(app)
           .get("/api/comments/review/3")
           .expect(200)
@@ -567,7 +647,7 @@ describe("api", () => {
           });
       });
 
-      it("200 GET - review with no comments should return an empty array.", () => {
+      it("200 - review with no comments should return an empty array.", () => {
         return request(app)
           .get("/api/comments/review/8")
           .expect(200)
@@ -577,7 +657,7 @@ describe("api", () => {
           });
       });
 
-      it("404 GET - responds with msg when sent valid but non-existent review id.", () => {
+      it("404 - responds with msg when sent valid but non-existent review id.", () => {
         return request(app)
           .get("/api/comments/review/74872")
           .expect(404)
@@ -588,7 +668,7 @@ describe("api", () => {
           });
       });
 
-      it("400 GET - responds with msg when sent invalid review id request.", () => {
+      it("400 - responds with msg when sent invalid review id request.", () => {
         return request(app)
           .get("/api/comments/review/bad-request")
           .expect(400)
@@ -614,52 +694,52 @@ describe("api", () => {
     it("201 PATCH - ignores other properties responds with the updated review.", () => {
       return request(app)
         .patch("/api/comments/2")
-        .send({ inc_votes: "+1" , soup:'tomato'})
+        .send({ inc_votes: "+1", soup: "tomato" })
         .expect(201)
         .then(({ body }) => {
           const comment = body.comment;
           expect(comment.votes).toBe(14);
         });
     });
-    it('400 PATCH - responds with msg if inc_votes not included.', () => {
+    it("400 PATCH - responds with msg if inc_votes not included.", () => {
       return request(app)
-      .patch("/api/comments/2")
-      .send({ just:'soup'})
-      .expect(400)
-      .then(({ body }) => {
-        const serverResponseMsg = body.msg;
-        expect(serverResponseMsg).toBe("Bad request.");
-      });
+        .patch("/api/comments/2")
+        .send({ just: "soup" })
+        .expect(400)
+        .then(({ body }) => {
+          const serverResponseMsg = body.msg;
+          expect(serverResponseMsg).toBe("Bad request.");
+        });
     });
-    it('400 PATCH - responds with msg if sent to invalid review id.', () => {
+    it("400 PATCH - responds with msg if sent to invalid review id.", () => {
       return request(app)
-      .patch("/api/comments/bad-request")
-      .send({ inc_votes:'+1'})
-      .expect(400)
-      .then(({ body }) => {
-        const serverResponseMsg = body.msg;
-        expect(serverResponseMsg).toBe("Bad request.");
-      });
+        .patch("/api/comments/bad-request")
+        .send({ inc_votes: "+1" })
+        .expect(400)
+        .then(({ body }) => {
+          const serverResponseMsg = body.msg;
+          expect(serverResponseMsg).toBe("Bad request.");
+        });
     });
-    it('400 PATCH - responds with msg if passed a non-number.', () => {
+    it("400 PATCH - responds with msg if passed a non-number.", () => {
       return request(app)
-      .patch("/api/comments/2")
-      .send({ inc_votes:'notanumber'})
-      .expect(400)
-      .then(({ body }) => {
-        const serverResponseMsg = body.msg;
-        expect(serverResponseMsg).toBe("Bad request.");
-      });
+        .patch("/api/comments/2")
+        .send({ inc_votes: "notanumber" })
+        .expect(400)
+        .then(({ body }) => {
+          const serverResponseMsg = body.msg;
+          expect(serverResponseMsg).toBe("Bad request.");
+        });
     });
-    it('404 PATCH - responds with msg when sent valid but non-existent path.', () => {
+    it("404 PATCH - responds with msg when sent valid but non-existent path.", () => {
       return request(app)
-      .patch("/api/comments/12345")
-      .send({ inc_votes:'+1'})
-      .expect(404)
-      .then(({ body }) => {
-        const serverResponseMsg = body.msg;
-        expect(serverResponseMsg).toBe("Comment not found.");
-      });
+        .patch("/api/comments/12345")
+        .send({ inc_votes: "+1" })
+        .expect(404)
+        .then(({ body }) => {
+          const serverResponseMsg = body.msg;
+          expect(serverResponseMsg).toBe("Comment not found.");
+        });
     });
 
     //Invalid comment id

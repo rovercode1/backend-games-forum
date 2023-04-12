@@ -1,4 +1,5 @@
 const { query } = require("./../db/connection.js");
+const format = require('pg-format');
 const db = require("./../db/connection.js");
 
 exports.selectReviews = (queries) => {
@@ -75,6 +76,24 @@ exports.selectReviews = (queries) => {
   });
 };
 
+exports.insertReview = (requestedPost) => {
+  const {owner, title, review_body, designer, category} = requestedPost
+  let {review_img_url} = requestedPost 
+  review_img_url === ''? review_img_url = 'https://get.pxhere.com/photo/game-recreation-yellow-board-game-gamble-sports-double-six-games-luck-lucky-dice-dice-game-indoor-games-and-sports-tabletop-game-1259426.jpg':null 
+  const formattedReview = [[owner, title, review_body, designer, category, review_img_url]];
+
+
+
+  let queryString = format("INSERT INTO reviews (owner, title, review_body, designer, category, review_img_url) VALUES %L RETURNING *", formattedReview);
+  return db.query(queryString).then((review) => {
+    if (review.rowCount === 0) {
+      return Promise.reject("Review not found.");
+    }
+    console.log(review.rows[0])
+    return review.rows[0];
+  });
+};
+
 exports.selectReviewById = (reviewId) => {
   let queryString = `
   SELECT reviews.title, reviews.owner , reviews.review_id, reviews.category, review_img_url, reviews.review_body, reviews.created_at, reviews.votes, reviews.designer, COUNT(comment_id) as comment_count
@@ -116,7 +135,10 @@ exports.updateReviewById = (reviewId, patchRequest) => {
   let queryParam = [];
 
   if (reviewId !== undefined) {
-    queryString += ` WHERE review_id = $1  RETURNING *`;
+    queryString += ` 
+    WHERE review_id = $1  
+    
+    RETURNING *`;
     queryParam.push(+reviewId);
   }
 
