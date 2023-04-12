@@ -132,6 +132,15 @@ describe("api", () => {
             expect(reviewDates).toBeSorted({ descending: true });
           });
       });
+      it ("200 - responds with total_count property in reviews array .", () => {
+        return request(app)
+          .get("/api/reviews")
+          .expect(200)
+          .then(({ body }) => {
+            const total_count = body.total_count;
+            expect(total_count).toBe(13);
+          });
+      });
     });
     describe("POST", () => {
       it("201 - responds with the posted review.", () => {
@@ -400,6 +409,56 @@ describe("api", () => {
       });
     });
   });
+
+  describe('/api/reviews?pagination', () => {
+    it("200 - responds with an array of 10 review objects if limit is not provided.", () => {
+      return request(app)
+        .get("/api/reviews?p=1")
+        .expect(200)
+        .then(({ body }) => {
+          const reviews = body.reviews;
+          expect(reviews.length).toBe(10);
+        });
+    });
+    it("200 - responds with an array of review objects where limit = query.", () => {
+      return request(app)
+        .get("/api/reviews?p=1&limit=2")
+        .expect(200)
+        .then(({ body }) => {
+          const reviews = body.reviews;
+          expect(reviews.length).toBe(2);
+        });
+    });
+    it("200 - responds with an empty array when page has no reviews .", () => {
+      return request(app)
+        .get("/api/reviews?p=60&limit=2")
+        .expect(200)
+        .then(({ body }) => {
+          const reviews = body.reviews;
+          expect(reviews).toEqual([])
+          expect(reviews.length).toBe(0);
+        });
+    });
+    it("400 - invalid page query responds with bad request msg.", () => {
+      return request(app)
+        .get("/api/reviews?p=bad-request")
+        .expect(400)
+        .then(({ body }) => {
+          const serverResponseMsg = body.msg;
+          expect(serverResponseMsg).toBe("Bad request.");
+        });
+    });
+    it("400 - invalid page query responds with bad request msg.", () => {
+      return request(app)
+        .get("/api/reviews?p=1&limit=bad-request")
+        .expect(400)
+        .then(({ body }) => {
+          const serverResponseMsg = body.msg;
+          expect(serverResponseMsg).toBe("Bad request.");
+        });
+    });
+  });
+  
 
   describe("/api/reviews/review_id", () => {
     describe("GET", () => {
