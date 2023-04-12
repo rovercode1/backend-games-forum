@@ -89,7 +89,6 @@ exports.insertReview = (requestedPost) => {
     if (review.rowCount === 0) {
       return Promise.reject("Review not found.");
     }
-    console.log(review.rows[0])
     return review.rows[0];
   });
 };
