@@ -25,9 +25,9 @@ exports.getCommentsByReviewid = (request, response, next) => {
     });
 };
 
-
 exports.deleteSelectedComment = (request, response, next) => {
   const comment_id = request.params.comment_id;
+
   deleteComment(comment_id)
     .then(() => {
       response.status(204).send({msg: 'that worked!'})

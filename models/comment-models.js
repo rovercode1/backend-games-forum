@@ -14,6 +14,7 @@ exports.insertComment = (newComment, reviewId) => {
     return postedComment.rows[0];
   });
 };
+
 exports.selectComments = (reviewId) => {
   let queryStr = `
   SELECT reviews.review_id, comments.comment_id,  comments.votes, comments.created_at, comments.author, comments.body, COUNT(comment_id) as comment_count
@@ -30,7 +31,9 @@ exports.selectComments = (reviewId) => {
     `;
     queryParam.push(reviewId);
   }
-  return db.query(queryStr, queryParam).then((comments) => {
+
+  return db.query(queryStr, queryParam)
+  .then((comments) => {
     if (comments.rowCount === 0) {
       return Promise.reject("Comment not found.");
     }
@@ -48,7 +51,8 @@ exports.deleteComment = (comment_id)=>{
   DELETE FROM comments
   WHERE comment_id = $1`;
 
-  return db.query(queryStr,formattedCommentId).then(() => {
+  return db.query(queryStr,formattedCommentId)
+  .then(() => {
     return true
   });
 }

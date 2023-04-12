@@ -2,6 +2,7 @@ const {selectReviews, selectReviewById, updateReviewById, insertReview} = requir
 
 
 exports.getReviews = (request, response, next)=>{
+  
   selectReviews(request.query).then((reviews)=>{
     response.status(200).send({total_count: reviews.length, reviews: reviews})
   }).catch((err)=>{
@@ -11,6 +12,7 @@ exports.getReviews = (request, response, next)=>{
 
 exports.postReview = (request, response, next)=>{
   const requestedPost = request.body
+
   insertReview(requestedPost).then((review)=>{
     response.status(201).send({review: review})
   }).catch((err)=>{
@@ -20,6 +22,7 @@ exports.postReview = (request, response, next)=>{
 
 exports.getReviewById = (request, response, next)=>{
   const reviewId = request.params.review_id;
+
   selectReviewById(reviewId)
     .then((review)=>{
       response.status(200).send({review: review})

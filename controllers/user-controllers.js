@@ -14,6 +14,7 @@ exports.getUsers = (request, response, next) => {
 
 exports.getUserById = (request, response, next) => {
   const username = request.params.username;
+  
   selectUserById(username)
     .then((user) => {
     response.status(200).send({ user: user });

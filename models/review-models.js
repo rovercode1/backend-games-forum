@@ -1,7 +1,5 @@
-const { query } = require("./../db/connection.js");
 const format = require("pg-format");
 const db = require("./../db/connection.js");
-const { off } = require("../app.js");
 
 exports.selectReviews = (queries) => {
   let {category, sort_by, order, limit, p } = queries
@@ -70,7 +68,8 @@ exports.selectReviews = (queries) => {
   }  
 
 
-  return db.query(queryString).then((reviews) => {
+  return db.query(queryString)
+  .then((reviews) => {
     return reviews.rows;
   });
 };
@@ -90,7 +89,8 @@ exports.insertReview = (requestedPost) => {
     "INSERT INTO reviews (owner, title, review_body, designer, category, review_img_url) VALUES %L RETURNING *",
     formattedReview
   );
-  return db.query(queryString).then((review) => {
+  return db.query(queryString)
+  .then((review) => {
     if (review.rowCount === 0) {
       return Promise.reject("Review not found.");
     }
@@ -114,7 +114,8 @@ exports.selectReviewById = (reviewId) => {
     `;
     queryParam.push(reviewId);
   }
-  return db.query(queryString, queryParam).then((review) => {
+  return db.query(queryString, queryParam)
+  .then((review) => {
     if (review.rowCount === 0) {
       return Promise.reject("Review not found.");
     }
@@ -146,7 +147,8 @@ exports.updateReviewById = (reviewId, patchRequest) => {
     queryParam.push(+reviewId);
   }
 
-  return db.query(queryString, queryParam).then((review) => {
+  return db.query(queryString, queryParam)
+  .then((review) => {
     if (review.rowCount === 0) {
       return Promise.reject("Review not found.");
     }
